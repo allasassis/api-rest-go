@@ -1,20 +1,14 @@
 package main
 
 import (
-	"fmt"
-	"log"
-	"net/http"
+	"github.com/allasassis/api-rest-go.git/models"
+	"github.com/allasassis/api-rest-go.git/routes"
 )
 
-func Home(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "Home page")
-}
-
-func HandleRequest() {
-	http.HandleFunc("/", Home)
-	log.Fatal(http.ListenAndServe(":8000", nil))
-}
-
 func main() {
-	HandleRequest()
+	models.Personalities = []models.Personality{
+		{Id: 1, Name: "Test", Story: "TestStory"},
+		{Id: 2, Name: "Test2", Story: "TestStory2"},
+	}
+	routes.HandleRequest()
 }

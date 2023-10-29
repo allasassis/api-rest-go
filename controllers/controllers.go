@@ -3,11 +3,11 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/mux"
-	"net/http"
-	"strconv"
-
+	"github.com/allasassis/api-rest-go.git/database"
 	"github.com/allasassis/api-rest-go.git/models"
+	"github.com/gorilla/mux"
+	"log"
+	"net/http"
 )
 
 func Home(w http.ResponseWriter, r *http.Request) {
@@ -15,16 +15,29 @@ func Home(w http.ResponseWriter, r *http.Request) {
 }
 
 func AllPersonalities(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(models.Personalities)
+	var p []models.Personality
+	database.DB.Find(&p)
+	json.NewEncoder(w).Encode(p)
 }
 
 func ReturnPersonality(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
-
-	for _, personality := range models.Personalities {
-		if strconv.Itoa(personality.Id) == id {
-			json.NewEncoder(w).Encode(personality)
-		}
+	var p []models.Personality
+	database.DB.First(&p, id)
+	err := json.NewEncoder(w).Encode(p)
+	if err != nil {
+		log.Panic(err)
 	}
+}
+
+func CreatePersonality(w http.ResponseWriter, r *http.Request) {
+	var personality models.Personality
+	err := json.NewDecoder(r.Body).Decode(&personality)
+	if err != nil {
+		log.Panic(err)
+	}
+	database.DB.Create(&personality)
+	json.NewEncoder(w).Encode(personality)
+
 }

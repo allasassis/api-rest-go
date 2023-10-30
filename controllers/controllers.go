@@ -52,3 +52,13 @@ func DeletePersonality(w http.ResponseWriter, r *http.Request) {
 		log.Panic(err)
 	}
 }
+
+func EditPersonality(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+	var p models.Personality
+	database.DB.First(&p, id)
+	json.NewDecoder(r.Body).Decode(&p)
+	database.DB.Save(&p)
+	json.NewEncoder(w).Encode(p)
+}

@@ -41,3 +41,14 @@ func CreatePersonality(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(personality)
 
 }
+
+func DeletePersonality(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+	var p []models.Personality
+	database.DB.Delete(&p, id)
+	err := json.NewEncoder(w).Encode(p)
+	if err != nil {
+		log.Panic(err)
+	}
+}
